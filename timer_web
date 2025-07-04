@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>タイマー</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    #time {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 24px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="time">00:00:00</div>
+  <button onclick="startTimer()">スタート</button>
+  <button onclick="stopTimer()">ストップ</button>
+  <button onclick="resetTimer()">リセット</button>
+
+  <script>
+    let startTime;
+    let timerInterval;
+    let elapsed = 0;
+
+    function updateTime() {
+      const now = Date.now();
+      const diff = now - startTime + elapsed;
+      const seconds = Math.floor(diff / 1000) % 60;
+      const minutes = Math.floor(diff / 1000 / 60) % 60;
+      const hours = Math.floor(diff / 1000 / 60 / 60);
+      document.getElementById('time').textContent =
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (!timerInterval) {
+        startTime = Date.now();
+        timerInterval = setInterval(updateTime, 1000);
+      }
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        elapsed += Date.now() - startTime;
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startTime = null;
+      elapsed = 0;
+      document.getElementById('time').textContent = '00:00:00';
+    }
+  </script>
+</body>
+</html>
