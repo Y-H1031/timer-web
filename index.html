@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>タイマー</title>
+  <title>高精度タイマー</title>
   <style>
     body {
       text-align: center;
@@ -20,47 +20,48 @@
   </style>
 </head>
 <body>
-  <h1>タイマー</h1>
-  <div id="time">00:00:00</div>
-  <button onclick="start()">スタート</button>
-  <button onclick="stop()">ストップ</button>
+  <h1>高精度タイマー</h1>
+  <div id="time">00:00:00.00</div>
+  <button id="toggleButton" onclick="toggleTimer()">スタート</button>
   <button onclick="reset()">リセット</button>
 
   <script>
     let startTime;
-    let timer;
+    let timer = null;
     let elapsed = 0;
+    let running = false;
 
     function update() {
       const now = Date.now();
       const diff = now - startTime + elapsed;
-      const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-      const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-      const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-      document.getElementById('time').textContent = `${h}:${m}:${s}`;
+      const hours = String(Math.floor(diff / 3600000)).padStart(2, '0');
+      const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+      const centiseconds = String(Math.floor((diff % 1000) / 10)).padStart(2, '0');
+      document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}.${centiseconds}`;
     }
 
-    function start() {
-      if (!timer) {
+    function toggleTimer() {
+      if (!running) {
         startTime = Date.now();
-        timer = setInterval(update, 1000);
-      }
-    }
-
-    function stop() {
-      if (timer) {
+        timer = setInterval(update, 10);
+        document.getElementById('toggleButton').textContent = "ストップ";
+        running = true;
+      } else {
         clearInterval(timer);
         elapsed += Date.now() - startTime;
-        timer = null;
+        document.getElementById('toggleButton').textContent = "スタート";
+        running = false;
       }
     }
 
     function reset() {
       clearInterval(timer);
       timer = null;
-      startTime = null;
       elapsed = 0;
-      document.getElementById('time').textContent = '00:00:00';
+      running = false;
+      document.getElementById('time').textContent = '00:00:00.00';
+      document.getElementById('toggleButton').textContent = 'スタート';
     }
   </script>
 </body>
