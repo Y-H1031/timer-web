@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>タイマー</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      margin-top: 100px;
+    }
+    #time {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 24px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>タイマー</h1>
+  <div id="time">00:00:00</div>
+  <button onclick="start()">スタート</button>
+  <button onclick="stop()">ストップ</button>
+  <button onclick="reset()">リセット</button>
+
+  <script>
+    let startTime;
+    let timer;
+    let elapsed = 0;
+
+    function update() {
+      const now = Date.now();
+      const diff = now - startTime + elapsed;
+      const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+      const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+      document.getElementById('time').textContent = `${h}:${m}:${s}`;
+    }
+
+    function start() {
+      if (!timer) {
+        startTime = Date.now();
+        timer = setInterval(update, 1000);
+      }
+    }
+
+    function stop() {
+      if (timer) {
+        clearInterval(timer);
+        elapsed += Date.now() - startTime;
+        timer = null;
+      }
+    }
+
+    function reset() {
+      clearInterval(timer);
+      timer = null;
+      startTime = null;
+      elapsed = 0;
+      document.getElementById('time').textContent = '00:00:00';
+    }
+  </script>
+</body>
+</html>
